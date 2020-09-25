@@ -13,3 +13,6 @@ Raspberry pi 4: this serves as the “brain” of the robot. It is currently run
 That is the basic functions of the robot. I am interested in projects involving open-cv or tensor flow if anyone has some knowledge on it. My plan is to use this robot as a group project with the direction determined by a group idea. The way I see it going with the current pandemic is the group project involving the code that I would then upload and video the effects on zoom. I also have the hardware to create things like stop lights to simulate a street environment or something like that.
 
 One thing to note is that the arduino ino file is a c++ file however i only used c code.
+
+Project Idea:
+I would really like input from the team about the direction to take this. Things I'm interesting in are room mapping, mabey with the distance sensors? object following, a more advance autonomous navigation system. I am planning on buying an add on from google that makes tensor flow run much faster on the Pi so I would be interesting in using that as well.
