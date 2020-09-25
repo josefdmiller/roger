@@ -11,3 +11,5 @@ PCA9685: this is the controller for the two servo motors on the pan tilt device 
 Raspberry pi 4: this serves as the “brain” of the robot. It is currently running open cv python and has two completed programs. One is a facial detection program using a haar-cascade and the other is a ball follower that uses HSV and contours to track the object. I will put a picture of the code below.
 
 That is the basic functions of the robot. I am interested in projects involving open-cv or tensor flow if anyone has some knowledge on it. My plan is to use this robot as a group project with the direction determined by a group idea. The way I see it going with the current pandemic is the group project involving the code that I would then upload and video the effects on zoom. I also have the hardware to create things like stop lights to simulate a street environment or something like that.
+
+One thing to note is that the arduino ino file is a c++ file however i only used c code.
