@@ -1,7 +1,7 @@
 from cv2 import cv2
 import time
 
-classNames = {0: 'background',
+class_names = {0: 'background',
               1: 'person', 2: 'bicycle', 3: 'car', 4: 'motorcycle', 5: 'airplane', 6: 'bus',
               7: 'train', 8: 'truck', 9: 'boat', 10: 'traffic light', 11: 'fire hydrant',
               13: 'stop sign', 14: 'parking meter', 15: 'bench', 16: 'bird', 17: 'cat',
@@ -19,8 +19,8 @@ classNames = {0: 'background',
               80: 'toaster', 81: 'sink', 82: 'refrigerator', 84: 'book', 85: 'clock',
               86: 'vase', 87: 'scissors', 88: 'teddy bear', 89: 'hair drier', 90: 'toothbrush'}
 
-def id_class_name(class_id, classes):
-    for key, value in classes.items():
+def id_class_name(class_id, class_names):
+    for key, value in class_names.items():
         if class_id == key:
             return value
 
@@ -30,31 +30,26 @@ config_path = 'graph.pbtxt'
 weights_path = 'frozen_inference_graph.pb'
 net = cv2.dnn.readNetFromTensorflow(weights_path, config_path)
 
-try:
-    while True:
-        success, image = cap.read()
-        net.setInput(cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True))
-        output = net.forward()
-        img_h, img_w, _ = image.shape
-        for detection in output[0, 0, :, :]:
-            confidence = detection[2]
-            if confidence > .7:
-                class_id = detection[1]
-                class_label=id_class_name(class_id,classNames)
-                x = int(detection[3] * img_w) # x position
-                y = int(detection[4] * img_h) # y position
-                w = int(detection[5] * img_w) # width
-                h = int(detection[6] * img_h) # height
-                
-                print(class_label)
-                
-                #cv2.rectangle(image, (x, y, w, h), (0, 255, 0), thickness=2)
-                #cv2.putText(image,class_label, (x, y + 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        #cv2.imshow('output', image)
-        #if cv2.waitKey(1) == ord("q"):
-        #    break
-except KeyboardInterrupt:
-    cv2.destroyAllWindows()
+while True:
+    success, image = cap.read()
+    net.setInput(cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True))
+    output = net.forward()
+    img_h, img_w, _ = image.shape
+    for detection in output[0, 0, :, :]:
+        confidence = detection[2]
+        if confidence > 0.7:
+            class_id = detection[1]
+            class_label=id_class_name(class_id,class_names)
+            x = int(detection[3] * img_w) # x position
+            y = int(detection[4] * img_h) # y position
+            w = int(detection[5] * img_w) # width
+            h = int(detection[6] * img_h) # height
+            cv2.rectangle(image, (x, y, w, h), (0, 255, 0), thickness=2)
+            cv2.putText(image,class_label, (x, y + 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.imshow('output', image)
+        if cv2.waitKey(1) == ord("q"):
+            break
+cv2.destroyAllWindows()
 
     
 
