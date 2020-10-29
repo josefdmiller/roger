@@ -25,26 +25,26 @@ def id_class_name(class_id, class_names):
             return value
 
 cap = cv2.VideoCapture(0)
-
+# this is the deep neural network(dnn). The .pbtxt is the opencv conversion of the .pb file. .pb is for protobuf which is the file extension for a tensorflow dnn.
 config_path = 'graph.pbtxt'
 weights_path = 'frozen_inference_graph.pb'
-net = cv2.dnn.readNetFromTensorflow(weights_path, config_path)
+net = cv2.dnn.readNetFromTensorflow(weights_path, config_path) # this creates a dnn object called net from the two files passed in.
 
 while True:
     success, image = cap.read()
-    net.setInput(cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True))
-    output = net.forward()
-    img_h, img_w, _ = image.shape
-    for detection in output[0, 0, :, :]:
+    net.setInput(cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True)) # the point of this method is to convert the image into a format that the dnn can use. Called a blob.
+    output = net.forward() # net.forward() is the passing of the blob through the network. The result is called the output. It is this output that we can pull information from.
+    img_h, img_w, _ = image.shape # this creates two variables from the image shape, height and width. We don't care about the 3rd value depth so we pass it into an unused variable called _.
+    for detection in output[0, 0, :, :]: # this is going to iterate over the values of the output variable. What we care about is the detection values.
         confidence = detection[2]
-        if confidence > 0.7:
+        if confidence > 0.7: # you can change this higher or lower. For example if my computer is only 50% sure it is a human it will not label it as one.
             class_id = detection[1]
-            class_label=id_class_name(class_id,class_names)
-            x = int(detection[3] * img_w) # x position
-            y = int(detection[4] * img_h) # y position
+            class_label=id_class_name(class_id,class_names) # detection[1] is the class_id, this function is defined above and will return the matching label.
+            x = int(detection[3] * img_w) # x position # the following are very important for us because this is how we can tell the robot where stuff is in the image.
+            y = int(detection[4] * img_h) # y position # if you print(detection[3]) for example it will display the x coordinate of the object.
             w = int(detection[5] * img_w) # width
             h = int(detection[6] * img_h) # height
-            cv2.rectangle(image, (x, y, w, h), (0, 255, 0), thickness=2)
+            cv2.rectangle(image, (x, y, w, h), (0, 255, 0), thickness=2) # these next two are what labels and boxes the discovered objects.
             cv2.putText(image,class_label, (x, y + 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv2.imshow('output', image)
         if cv2.waitKey(1) == ord("q"):
