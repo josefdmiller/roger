@@ -15,11 +15,6 @@ setup = 'nvarguscamerasrc sensor_mode = ' + str(camera) + ' ! video/x-raw(memory
 cam = cv2.VideoCapture(setup) # 1280 720
 font = cv2.FONT_HERSHEY_SIMPLEX
 net = jetson.inference.detectNet('ssd-mobilenet-v2', threshold=.5)
-event1 = 0
-x_pos = 70
-y_pos = 70 #115
-pan.angle = x_pos
-tilt.angle = y_pos
 time_mark = 0
 fps = 0
 fps_filter = 0
@@ -27,6 +22,11 @@ uart = serial.Serial(port="/dev/ttyACM0", baudrate=9600, bytesize=serial.EIGHTBI
 servo = ServoKit(channels=16)
 pan = servo.servo[0]
 tilt = servo.servo[1]
+event1 = 0
+x_pos = 70
+y_pos = 70 #115
+pan.angle = x_pos
+tilt.angle = y_pos
 
 def show_fps():
     global time_mark
@@ -73,7 +73,7 @@ while True:
         obj1       = 'stop sign'        
         P = 40
         
-        if class_id == obj1: # i could also switch to a color mask to track id an object then jump to the mask
+        if class_id == obj1:
             cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 1)
             cv2.putText(image, class_id +' '+ confidence +' %', (left + 10, top + 30), font, 1, (0, 0, 255), 2)
 
@@ -81,7 +81,7 @@ while True:
                 x_pos = x_pos + x_vector / P
                 
                 if x_pos > 180:
-                    x_pos = 180 # i could change the x postion to compensate for the turn
+                    x_pos = 180
                     print("turning right")
                     
                 if x_pos < 0:
@@ -103,16 +103,15 @@ while True:
             tilt.angle = y_pos
             print(area)
             while class_id == obj1 and event1 == 0 and area > 150000:
-                print('stopping')
-                #stop()
+                stop()
                 time.sleep(3)
                 event1 = 1
 
     print("forward")                    
-    #forward()
+    forward()
     cv2.putText(image, str(show_fps()) + ' fps ', (0, 30), font, 1, (0, 0, 255), 2)
     cv2.imshow('output', image)
-    #cv2.moveWindow('output', 0, 0)
+    cv2.moveWindow('output', 0, 0)
     
     if cv2.waitKey(1) == ord('q'):
         break
