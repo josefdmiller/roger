@@ -29,7 +29,7 @@ void setup()
 
 void loop()
 {
-    /**if (left_sonar.get_distance() < min_dist)
+    if (left_sonar.get_distance() < min_dist)
     {
         robot.right(spd); 
     }
@@ -41,21 +41,33 @@ void loop()
     if (right_sonar.get_distance() < min_dist)
     {
         robot.left(spd);
-    }**/
+    }
     if (Serial.available() > 0)
     {
         data = Serial.read();
         if (data == '1')
         {
-            robot.left(spd);
+            robot.forward(spd);
         }
         if (data == '2')
         {
+            robot.left(spd);
+        }
+        if (data == '3')
+        {
             robot.right(spd);
         }
-        else
+        if (data == '4')
+        {
+            robot.backward(spd);
+        }
+        if (data == '5')
         {
             robot.stop();
         }
-    }  
+    }
+    else
+    {
+        robot.stop();
+    }
 }
